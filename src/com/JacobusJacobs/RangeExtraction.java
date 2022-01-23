@@ -19,62 +19,70 @@ public class RangeExtraction implements NumberRangeSummarizer {
 
     @Override
     public String summarizeCollection(Collection<Integer> input) {
-        int firstOne = 0;
-        int thirdOne = 2;
-        int lastNum = 0;
+
         ArrayList<Integer> a = new ArrayList<Integer>(input);
         int[] args = a.stream().mapToInt(i->i).toArray();
-        String comString = "";
         if(args.length == 1)
             return Integer.toString(args[0]);
         else if(args.length == 2)
-            return comString = Integer.toString(args[0]) + ", " + Integer.toString(args[1]);
-        while(firstOne < args.length && thirdOne < args.length){
-            if((Math.abs(args[firstOne])-Math.abs(args[thirdOne-1])== 1 ||
-                    Math.abs(args[firstOne])-Math.abs(args[thirdOne-1])== -1) &&
-                    (Math.abs(args[thirdOne-1])-Math.abs(args[thirdOne])== 1 ||
-                            Math.abs(args[thirdOne-1])-Math.abs(args[thirdOne])== -1))
-            {
-                lastNum = thirdOne;
-                while(thirdOne<args.length)
-                {
-                    if((Math.abs(args[thirdOne-1])- Math.abs(args[thirdOne]))==1 ||
-                            (Math.abs(args[thirdOne-1])- Math.abs(args[thirdOne]))==-1 ){
-                        lastNum = thirdOne;
-                        thirdOne++;
-                    } else {
-                        break;
-                    }
-                }
-                comString += Integer.toString(args[firstOne])  + "-" + Integer.toString(args[lastNum]) + ", ";
-                firstOne = lastNum + 1;
-                thirdOne = lastNum + 3;
-                if((args.length-firstOne)==2){
-                    comString += Integer.toString(args[firstOne]) + ", " + Integer.toString(args[firstOne+1]);
-                    break;
-                } else if ((args.length-firstOne)==1){
-                    comString += Integer.toString(args[firstOne]);
-                    break;
-                }
-            } else {
-                comString += Integer.toString(args[firstOne]) + ", ";
-                firstOne++;
-                thirdOne++;
-                if((args.length-firstOne)==2){
-                    comString += Integer.toString(args[firstOne]) + ", " + Integer.toString(args[firstOne+1]);
-                    break;
-                } else if ((args.length-firstOne)==1){
-                    comString += Integer.toString(args[firstOne]);
+            return Integer.toString(args[0]) + ", " + Integer.toString(args[1]);
+        String completeString = "";
+        int start = 0;
+        int step1 = 0;
+        int step2 = 1;
+        int count = 0;
+        int difference = 0;
+        Boolean isDifference = false;
+        while(start<args.length){
+            while(step2<args.length){
+                difference = Math.abs(args[step2]) - Math.abs(args[step1]);
+                if(difference==-1 || difference==1){
+                    step1++; step2++; count++;
+                } else {
+                    isDifference = true;
                     break;
                 }
             }
+            //We are at the end of the sequence and a range needs to be extracted with no difference
+            if(step2 == args.length && count > 1 && isDifference == false){
+                completeString += Integer.toString(args[start]) + "-" + Integer.toString(args[step2-1]);
+                break;
+            //We at end of the sequence and range needs to be extracted, with a difference
+            } else if(step2 == args.length && count > 1) {
+                completeString += Integer.toString(args[start]) + "-" + Integer.toString(args[step1]) + ", " +
+                        Integer.toString(args[step2]);
+                break;
+            //End of sequence and no sequence needs to be extracted
+            } else if(step2 == args.length && isDifference == true) {
+                completeString += Integer.toString(args[start]) + ", " + Integer.toString(args[step2]);
+                break;
+            //Start is at the end of the sequence
+            } else if(step2 == args.length){
+                completeString += Integer.toString(args[start]);
+                break;
+            //Not end of sequence but range needs to be extracted
+            } else if (count > 1) {
+                completeString += Integer.toString(args[start]) + "-" + Integer.toString(args[step1]) + ", ";
+                start = step2;
+                step1 = start;
+                step2 = start + 1;
+                count = 0;
+                isDifference = false;
+                //Not end of sequence two numbers are in sequence
+            }  else if (count == 1){
+                completeString +=  Integer.toString(args[start]) + ", ";
+                start = step1;
+                count = 0;
+                isDifference = false;
+                //Not end of sequence
+            } else {
+                completeString += Integer.toString(args[start]) + ", ";
+                start = step2; step1 = start; step2 = start + 1;
+                count = 0;
+                isDifference = false;
+            }
         }
-        String checkComma = "";
-        if(comString.length()!=0)
-         checkComma = comString.substring(comString.length()-2);
-        if(checkComma.contains(", ")) {
-            return comString.substring(0, comString.length() - 2);
-        }
-        return comString.substring(0,comString.length());
+        return completeString;
+
     }
 }

@@ -2,6 +2,7 @@ package com.JacobusJacobs;
 import org.junit.Assert;
 import org.junit.Test;
 
+//Some assumptions that I made was that the numbers go from small to large and that they are all integers.
 public class RangeExtractionTest {
         @Test
         public void testEmptyString(){
@@ -18,6 +19,11 @@ public class RangeExtractionTest {
         public void threeNumberedSequentialString(){
             RangeExtraction rangeExtraction = new RangeExtraction();
             Assert.assertEquals("1-3",rangeExtraction.summarizeCollection(rangeExtraction.collect("1,2,3")));
+        }
+        @Test
+        public void threeNumberedNotSequential(){
+            RangeExtraction rangeExtraction = new RangeExtraction();
+            Assert.assertEquals("1, 3, 5",rangeExtraction.summarizeCollection(rangeExtraction.collect("1,3,5")));
         }
         @Test
         public void negativeToPositiveNumbers(){
