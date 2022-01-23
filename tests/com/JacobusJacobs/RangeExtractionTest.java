@@ -30,4 +30,9 @@ public class RangeExtractionTest {
             RangeExtraction rangeExtraction = new RangeExtraction();
             Assert.assertEquals("-7, -6, -4, -2-1, 3, 6-8, 12-15, 21-24, 31",rangeExtraction.summarizeCollection(rangeExtraction.collect("-7,-6,-4,-2,-1,0,1,3,6,7,8,12,13,14,15,21,22,23,24,31")));
         }
+        @Test
+        public void negativeToPositiveNumbersPlusTwoInSequence(){
+            RangeExtraction rangeExtraction = new RangeExtraction();
+            Assert.assertEquals("21-24, 31, 32",rangeExtraction.summarizeCollection(rangeExtraction.collect("21,22,23,24,31,32")));
+        }
 }

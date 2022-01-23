@@ -56,7 +56,10 @@ public class RangeExtraction implements NumberRangeSummarizer {
             } else if(step2 == args.length && isDifference == true) {
                 completeString += Integer.toString(args[start]) + ", " + Integer.toString(args[step2]);
                 break;
-            //Start is at the end of the sequence
+                //Start is at the end of the sequence
+            }else if(step2 == args.length && count==1){
+               completeString += Integer.toString(args[step1-1]) + ", " + Integer.toString(args[step2-1]);
+               break;
             } else if(step2 == args.length){
                 completeString += Integer.toString(args[start]);
                 break;
